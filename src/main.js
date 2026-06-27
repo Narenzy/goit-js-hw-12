@@ -9,13 +9,16 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const formEl = document.querySelector('.form');
 
-formEl.addEventListener('submit', event => {
+formEl.addEventListener('submit', async event => {
   event.preventDefault();
 
   const form = event.currentTarget;
 
   const formData = new FormData(form);
   const query = formData.get('search-text').trim();
+
+  const currentQuery = query;
+  const currentPage = 1;
 
   if (query === '') {
     iziToast.error({
@@ -28,7 +31,7 @@ formEl.addEventListener('submit', event => {
   clearGallery();
   showLoader();
 
-  getImagesByQuery(query)
+  await getImagesByQuery(currentQuery, currentPage)
     .then(data => {
       if (data.hits.length === 0) {
         iziToast.error({
