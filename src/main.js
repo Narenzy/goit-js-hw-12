@@ -10,6 +10,7 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const formEl = document.querySelector('.form');
+const loadMoreBtn = document.querySelector('.loader-btn');
 let currentQuery = '';
 let currentPage = 1;
 
@@ -44,6 +45,7 @@ formEl.addEventListener('submit', async event => {
       });
       return;
     }
+
     createGallery(data.hits);
 
     const totalPages = Math.ceil(data.totalHits / 15);
@@ -57,6 +59,38 @@ formEl.addEventListener('submit', async event => {
     iziToast.error({
       title: 'Error',
       message: 'Something went wrong. Please try again later!',
+    });
+    console.log(error);
+  } finally {
+    hideLoader();
+  }
+});
+
+loadMoreBtn.addEventListener('click', async () => {
+  currentPage += 1;
+  // createGallery(data.hits);
+  hideLoadMoreButton();
+  showLoader();
+
+  try {
+    const data = await getImagesByQuery(currentQuery, currentPage);
+    createGallery(data.hits);
+
+    const totalPages = Math.ceil(data.totalHits / 15);
+
+    if (currentPage < totalPages) {
+      showLoadMoreButton();
+    } else {
+      hideLoadMoreButton();
+
+      iziToast.info({
+        message: "We're sorry, but you've reached the end of search results.",
+      });
+    }
+  } catch (error) {
+    iziToast.error({
+      title: 'Error',
+      message: 'Something went wrong Please try again later!',
     });
     console.log(error);
   } finally {
