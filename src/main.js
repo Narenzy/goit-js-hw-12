@@ -68,13 +68,22 @@ formEl.addEventListener('submit', async event => {
 
 loadMoreBtn.addEventListener('click', async () => {
   currentPage += 1;
-  // createGallery(data.hits);
   hideLoadMoreButton();
   showLoader();
 
   try {
     const data = await getImagesByQuery(currentQuery, currentPage);
+
     createGallery(data.hits);
+
+    const { height: cardHeight } = document
+      .querySelector('.gallery li')
+      .getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
 
     const totalPages = Math.ceil(data.totalHits / 15);
 

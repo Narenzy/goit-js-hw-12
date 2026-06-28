@@ -89,3 +89,7 @@
   height: 40px;
   background: #4e75ff;
 }
+
+.html {
+  scroll-behavior: smooth;
+}
